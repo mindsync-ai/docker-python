@@ -30,10 +30,10 @@ def sed_inplace(filename, pattern, repl):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-NotebookApp.base_url", "--NotebookApp.base_url", required=True, help="")
-    ap.add_argument("-NotebookApp.token", "--NotebookApp.token", required=False, help="")
-    ap.add_argument("-NotebookApp.allow_origin", "--NotebookApp.allow_origin", required=False, help="")
-    ap.add_argument('--mindsync.base_url', required=True, help="", default='https://ms-backend-api.mdscdev.com')
+    ap.add_argument("-NotebookApp.base_url", "--NotebookApp.base_url", required=True)
+    ap.add_argument("-NotebookApp.token", "--NotebookApp.token", required=False)
+    ap.add_argument("-NotebookApp.allow_origin", "--NotebookApp.allow_origin", required=False)
+    ap.add_argument('--mindsync.base_url', required=True)
     args = vars(ap.parse_args())
 
     uuid = args["NotebookApp.base_url"].split("/")[2]
