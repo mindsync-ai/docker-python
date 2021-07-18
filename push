@@ -17,6 +17,9 @@ SOURCE_IMAGE_TAG_OVERRIDE=''
 TARGET_IMAGE='mindsync/python-gpu-p37-cu11'
 LABEL="latest"
 
+IMAGE_NAME='mindsync/python'
+IMAGE_TAG='gpu-p37-cu11'
+
 while :; do
     case "$1" in 
         -h|--help)
@@ -26,6 +29,7 @@ while :; do
         --noavx)
             SOURCE_IMAGE_TAG='mindsync/python-gpu-p37-cu11-noavx:latest'
             TARGET_IMAGE='mindsync/python-gpu-p37-cu11-noavx'
+            IMAGE_TAG='gpu-p37-cu11-noavx'
             ;;
         -s|--source-image)
             if [[ -z $2 ]]; then
@@ -58,5 +62,6 @@ readonly LABEL
 
 set -x
 docker login -u "mindsync" docker.io
-docker tag "${SOURCE_IMAGE_TAG}" "${TARGET_IMAGE}:${LABEL}"
-docker -- push "${TARGET_IMAGE}:${LABEL}"
+docker push "${IMAGE_NAME}:${IMAGE_TAG}"
+# docker tag "${SOURCE_IMAGE_TAG}" "${TARGET_IMAGE}:${LABEL}"
+# docker -- push "${TARGET_IMAGE}:${LABEL}"

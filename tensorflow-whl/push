@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+usage() {
+cat << EOF
+Usage: $0 [OPTIONS]
+Push a newly-built image to DockerHub.
+
+Options:
+    --noavx			Push the image without AVX support.
+EOF
+}
+
+IMAGE_NAME='mindsync/python-tensorflow'
+IMAGE_TAG='whl-cu11'
+
+while :; do
+    case "$1" in 
+        -h|--help)
+            usage
+            exit
+            ;;
+        --noavx)
+            IMAGE_TAG='whl-cu11-noavx'
+            ;;
+        -?*)
+            usage
+            printf 'ERROR: Unknown option: %s\n' "$1" >&2
+            exit
+            ;;
+        *)            
+            break
+    esac
+
+    shift
+done
+
+set -x
+docker login -u "mindsync" docker.io
+docker push "${IMAGE_NAME}:${IMAGE_TAG}"
