@@ -227,7 +227,8 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot"
 
 WORKDIR $HOME
 
-COPY --chown="${NB_UID}:${NB_GID}" tensorflow-whl/gpu/${TENSORFLOW_WHL} "${HOME}/${TENSORFLOW_WHL}"
+COPY --from=mindsync/python-tensorflow:0.0.1-whl-cu11 "/tmp/tensorflow_gpu/${TENSORFLOW_WHL}" "${HOME}/${TENSORFLOW_WHL}"
+#COPY --chown="${NB_UID}:${NB_GID}" tensorflow-whl/gpu/${TENSORFLOW_WHL} "${HOME}/${TENSORFLOW_WHL}"
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir graphviz==0.11 \
