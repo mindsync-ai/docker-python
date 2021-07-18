@@ -108,3 +108,7 @@ RUN pip install /tmp/tensorflow_gpu/tensorflow*.whl
 
 # Print out the built .whl files
 RUN ls -R /tmp/tensorflow*
+
+FROM scratch
+COPY --from=1 /tmp/tensorflow_gpu/tensorflow-2.4.1-cp37-cp37m-linux_x86_64.whl /
+
