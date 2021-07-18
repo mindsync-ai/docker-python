@@ -203,7 +203,7 @@ RUN conda install --quiet --yes \
     'statsmodels=0.12.*' \
     'sympy=1.7.*' \
     'vincent=0.4.*' \
-    'widgetsnbextension=3.5.*'\
+    'widgetsnbextension=3.5.*' \
     'xlrd=2.0.*' \
     pyyaml \
     mkl \
