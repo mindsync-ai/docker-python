@@ -203,7 +203,7 @@ RUN conda install --quiet --yes \
     'statsmodels=0.12.*' \
     'sympy=1.7.*' \
     'vincent=0.4.*' \
-    'widgetsnbextension=3.5.*'\
+    'widgetsnbextension=3.5.*' \
     'xlrd=2.0.*' \
     pyyaml \
     mkl \
@@ -227,7 +227,7 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot"
 
 WORKDIR $HOME
 
-COPY --chown="${NB_UID}:${NB_GID}" tensorflow-whl/gpu/${TENSORFLOW_WHL} "${HOME}/${TENSORFLOW_WHL}"
+COPY --from=mindsync/python-tensorflow:whl-cu11 "/${TENSORFLOW_WHL}" "${HOME}/${TENSORFLOW_WHL}"
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir graphviz==0.11 \

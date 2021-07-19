@@ -8,17 +8,19 @@ Build new Tensorflow wheels for use in the Kaggle Docker Python base images.
 
 Options:
     -c, --use-cache Use layer cache when building a new image.
+    --noavx         Build jupyter image with tensorflow having no AVX support.
 EOF
 }
 
 CACHE_FLAG='--no-cache'
-IMAGE_TAG='mindsync/python-gpu-p37-cu11'
+IMAGE_NAME='mindsync/python'
+IMAGE_TAG='gpu-p37-cu11'
 DOCKERFILE="Dockerfile"
 
 while :; do
     case "$1" in 
         --noavx)
-            IMAGE_TAG='mindsync/python-gpu-p37-cu11-noavx'
+            IMAGE_TAG='gpu-p37-cu11-noavx'
             DOCKERFILE='Dockerfile-noavx'
             ;;
         -h|--help)
@@ -44,4 +46,4 @@ readonly CACHE_FLAG
 readonly IMAGE_TAG
 
 set -x
-docker build --rm --pull $CACHE_FLAG -t "$IMAGE_TAG" -f "$DOCKERFILE" .
+docker build --rm --pull $CACHE_FLAG -t "${IMAGE_NAME}:${IMAGE_TAG}" -f "${DOCKERFILE}" .

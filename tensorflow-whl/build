@@ -14,13 +14,14 @@ EOF
 }
 
 CACHE_FLAG='--no-cache'
-IMAGE_TAG='mindsync/python-tensorflow-whl-cu11'
+IMAGE_NAME='mindsync/python-tensorflow'
+IMAGE_TAG='whl-cu11'
 DOCKERFILE='Dockerfile'
 
 while :; do
     case "$1" in 
         --noavx)
-            IMAGE_TAG='mindsync/python-tensorflow-whl-cu11-noavx'
+            IMAGE_TAG='whl-cu11-noavx'
             DOCKERFILE='Dockerfile-noavx'
             ;;
         -h|--help)
@@ -44,6 +45,7 @@ done
 
 readonly CACHE_FLAG
 readonly IMAGE_TAG
+readonly IMAGE_NAME
 
 set -x
-docker build --rm --pull $CACHE_FLAG -t "$IMAGE_TAG" -f "$DOCKERFILE" .
+docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_TAG}" -f "${DOCKERFILE}" .
