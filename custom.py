@@ -42,8 +42,8 @@ def main():
     command = f'wget -O /dev/null -o /dev/null {base_url}/api/1.0/rents/service/status/{uuid}'
     os.system("( crontab -l | grep -v -F \"" + command + "\" ; echo \"*/15 * * * * " + command + "\" ) | crontab -")
 
-    sed_inplace('/home/mindsync/.jupyter/custom/custom.js', f'{uuid}', f'{uuid}')
-    sed_inplace('/home/mindsync/.jupyter/custom/custom.js', f'{base_url}', f'{base_url}')
+    sed_inplace('/home/mindsync/.jupyter/custom/custom.js', '{uuid}', f'{uuid}')
+    sed_inplace('/home/mindsync/.jupyter/custom/custom.js', '{base_url}', f'{base_url}')
 
 
 if __name__ == '__main__':
