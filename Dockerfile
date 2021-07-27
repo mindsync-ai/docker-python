@@ -283,3 +283,5 @@ WORKDIR "${HOME}/work"
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
 
+RUN git clone https://github.com/mindsync-ai/docker-python-demo . && \
+    rm -rf .git README.md
