@@ -3,11 +3,16 @@ set -e
 
 usage() {
 cat << EOF
-Usage: ./"${0}" [OPTIONS] [-]
+Usage: "${0}" [OPTIONS] [-]
 Push image to DockerHub.
+
+Use dash to designate hub password is supplied by stdin.
 
 Options:
     --noavx			Push the image without AVX support.
+    --build-num     Build number to include into verseion number of the target image.
+                    If not specified no version included (default: '')
+    --build-ver     Build image version (default: 0.1)
     -h, --help      Print help message.
 EOF
 }
@@ -16,6 +21,9 @@ IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
 PASSWD_FROM_STDIN=0
 TAG_SUFFIX=''
+DEFAULT_VERSION='0.1'
+BUILD_VERSION=''
+BUILD_NUMBER=''
 
 while :; do
     case "$1" in 
@@ -29,6 +37,14 @@ while :; do
         --tag-suffix)
             shift
             TAG_SUFFIX="-${1}"
+            ;;
+        --build-ver)
+            shift
+            BUILD_VERSION="${1}"
+            ;;
+        --build-num)
+            shift
+            BUILD_NUMBER="${1}"
             ;;
         -?*)
             usage
@@ -45,8 +61,13 @@ while :; do
     shift
 done
 
-
 set -eux
+
+if [ -n "${BUILD_NUMBER}" ]; then
+    BUILD_VERSION="${BUILD_VERSION:-${DEFAULT_VERSION}}.${BUILD_NUMBER}-"
+else
+    BUILD_VERSION=''
+fi
 
 DOCKER_USERNAME=${DOCKER_USERNAME:-"mindsync"}
 
@@ -57,4 +78,4 @@ else
     echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
-docker push "${IMAGE_NAME}:${IMAGE_TAG}${TAG_SUFFIX}"
+docker push "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}"

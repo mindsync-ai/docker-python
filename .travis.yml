@@ -11,12 +11,12 @@ branches:
 
 script:
   - docker --version
-  - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}"
-  - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx
+  - ./build --build-num "${TRAVIS_BUILD_NUMBER}"
+  - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --noavx
 
 after_success:
-  - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}"
-  - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx
+  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
+  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
 notifications:
   email:

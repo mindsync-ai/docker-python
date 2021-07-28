@@ -3,13 +3,16 @@ set -e
 
 usage() {
 cat << EOF
-Usage: ./"${0}" [OPTIONS]
+Usage: "${0}" [OPTIONS]
 Build Mindsync Docker Python images.
 
 Options:
     -c, --use-cache Use layer cache when building a new image.
     --noavx         Build jupyter image with tensorflow having no AVX support.
-    --tag-suffix    Tag suffix to append to target image (default: '')
+    --build-num     Build number to include into verseion number of the target image.
+                    If not specified no version included (default: '')
+    --build-ver     Build image version (default: 0.1)
+    -h, --help      Print help message.
 EOF
 }
 
@@ -17,7 +20,9 @@ CACHE_FLAG='--no-cache'
 IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
 DOCKERFILE="Dockerfile"
-TAG_SUFFIX=''
+DEFAULT_VERSION='0.1'
+BUILD_VERSION=''
+BUILD_NUMBER=''
 
 while :; do
     case "$1" in 
@@ -32,9 +37,13 @@ while :; do
         -c|--use-cache)
             CACHE_FLAG=''
             ;;
-        --tag-suffix)
+        --build-ver)
             shift
-            TAG_SUFFIX="-${1}"
+            BUILD_VERSION="${1}"
+            ;;
+        --build-num)
+            shift
+            BUILD_NUMBER="${1}"
             ;;
         -?*)
             usage
@@ -48,8 +57,15 @@ while :; do
     shift
 done
 
+set -eux
+
+if [ -n "${BUILD_NUMBER}" ]; then
+    BUILD_VERSION="${BUILD_VERSION:-${DEFAULT_VERSION}}.${BUILD_NUMBER}-"
+else
+    BUILD_VERSION=''
+fi
+
 readonly CACHE_FLAG
 readonly IMAGE_TAG
 
-set -x
-docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_TAG}${TAG_SUFFIX}" -f "${DOCKERFILE}" .
+docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
