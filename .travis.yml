@@ -5,9 +5,10 @@ dist: focal
 services:
   - docker
 
-branches:
-  only:
-  - main
+# branches:
+#   only:
+#   - main
+#   - develop
 
 script:
   - docker --version
