@@ -129,14 +129,15 @@ RUN git clone https://github.com/Syllo/nvtop.git /tmp/nvtop && \
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
     sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
-    useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    addgroup --gid "${NB_GID}" users && \
+    useradd -m -s /bin/bash -N --uid "${NB_UID}" "${NB_USER}" && \
     mkdir -p $CONDA_DIR && \
-    chown $NB_USER:$NB_GID $CONDA_DIR && \
+    chown "${NB_USER}":"${NB_GID}" $CONDA_DIR && \
     chmod g+w /etc/passwd
 #    fix-permissions $HOME && \
 #    fix-permissions $CONDA_DIR
 
-USER $NB_UID
+USER "${NB_UID}"
 # Setup work directory for backward-compatibility
 #RUN mkdir "/home/${NB_USER}/work" && \
 #    fix-permissions "/home/${NB_USER}"
