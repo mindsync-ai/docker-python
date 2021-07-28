@@ -10,9 +10,9 @@ branches:
   - main
 
 script:
-  - ./build --tag-suffic "${TRAVIS_BUILD_NUMBER}"
-  - ./build --tag-suffic "${TRAVIS_BUILD_NUMBER}" --noavx
+  - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}"
+  - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx
 
 after_success:
-  - ./push --tag-suffic "${TRAVIS_BUILD_NUMBER}"
-  - ./push --tag-suffic "${TRAVIS_BUILD_NUMBER}" --noavx
+  - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}"
+  - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx

@@ -39,7 +39,7 @@ while :; do
         -?*)
             usage
             printf 'ERROR: Unknown option: %s\n' "$1" >&2
-            exit
+            exit 1
             ;;
         *)
             break
