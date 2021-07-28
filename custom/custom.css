@@ -9,3 +9,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+span.save_widget {
+    padding-top: 4px !important;
+}
