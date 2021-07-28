@@ -129,9 +129,8 @@ RUN git clone https://github.com/Syllo/nvtop.git /tmp/nvtop && \
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
     sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
-    addgroup --gid "${NB_GID}" users && \
     useradd -m -s /bin/bash -N --uid "${NB_UID}" "${NB_USER}" && \
-    mkdir -p $CONDA_DIR && \
+    mkdir -p "${CONDA_DIR}" && \
     chown "${NB_USER}":"${NB_GID}" $CONDA_DIR && \
     chmod g+w /etc/passwd
 #    fix-permissions $HOME && \
