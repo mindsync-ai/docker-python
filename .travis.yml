@@ -7,7 +7,7 @@ services:
 
 branches:
   only:
-  - experimental
+  - main
 
 script:
   - ./build --tag-suffic "${TRAVIS_BUILD_NUMBER}"
