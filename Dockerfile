@@ -254,8 +254,10 @@ RUN jupyter nbextension enable --py --sys-prefix ipyleaflet && \
 COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
 
 # Install customizations
-COPY --chown="${NB_UID}:${NB_GID}" custom /home/${NB_USER}/.jupyter/custom
-COPY --chown="${NB_UID}:${NB_GID}" custom.py /usr/local/bin/custom.py
+# COPY --chown="${NB_UID}:${NB_GID}" custom /home/${NB_USER}/.jupyter/custom
+# COPY --chown="${NB_UID}:${NB_GID}" custom.py /usr/local/bin/custom.py
+COPY --chown=mindsync:users custom /home/${NB_USER}/.jupyter/custom
+COPY --chown=mindsync:users custom.py /usr/local/bin/custom.py
 
 # Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
 COPY jupyter_notebook_config.py /etc/jupyter/

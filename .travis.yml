@@ -10,8 +10,7 @@ branches:
   - main
 
 script:
-  - addgroup --gid 100 users
-  - useradd -m -s /bin/bash -N --uid 1000 mindsync 
+  - docker --version
   - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}"
   - ./build --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx
 
