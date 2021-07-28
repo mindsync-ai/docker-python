@@ -17,3 +17,9 @@ script:
 after_success:
   - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}"
   - ./push --tag-suffix "${TRAVIS_BUILD_NUMBER}" --noavx
+
+notifications:
+  email:
+    - asfedorov@gmail.com
+    - k@mindsync.ai
+    - yellow4x@gmail.com
