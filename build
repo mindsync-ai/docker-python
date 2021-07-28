@@ -3,12 +3,13 @@ set -e
 
 usage() {
 cat << EOF
-Usage: $0 [OPTIONS]
-Build new Tensorflow wheels for use in the Kaggle Docker Python base images.
+Usage: ./"${0}" [OPTIONS]
+Build Mindsync Docker Python images.
 
 Options:
     -c, --use-cache Use layer cache when building a new image.
     --noavx         Build jupyter image with tensorflow having no AVX support.
+    --tag-suffix    Tag suffix to append to target image (default: '')
 EOF
 }
 
@@ -16,6 +17,7 @@ CACHE_FLAG='--no-cache'
 IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
 DOCKERFILE="Dockerfile"
+TAG_SUFFIX=''
 
 while :; do
     case "$1" in 
@@ -29,6 +31,10 @@ while :; do
             ;;
         -c|--use-cache)
             CACHE_FLAG=''
+            ;;
+        --tag-suffix)
+            shift
+            TAG_SUFFIX="-${1}"
             ;;
         -?*)
             usage
@@ -46,4 +52,4 @@ readonly CACHE_FLAG
 readonly IMAGE_TAG
 
 set -x
-docker build --rm --pull $CACHE_FLAG -t "${IMAGE_NAME}:${IMAGE_TAG}" -f "${DOCKERFILE}" .
+docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_TAG}${TAG_SUFFIX}" -f "${DOCKERFILE}" .
