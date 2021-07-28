@@ -26,5 +26,6 @@ elif [[ -n "${JUPYTER_ENABLE_LAB}" ]]; then
 else
     echo "WARN: Jupyter Notebook deprecation notice https://github.com/jupyter/docker-stacks#jupyter-notebook-deprecation-notice."
     # shellcheck disable=SC1091
+    git clone https://github.com/mindsync-ai/docker-python-demo . && rm -rf .git README.md
     . /usr/local/bin/start.sh ${wrapper} jupyter notebook --NotebookApp.default_url=/notebooks/welcome.ipynb "${ARGS[@]}"
 fi
