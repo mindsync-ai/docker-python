@@ -1,0 +1,18 @@
+language: minimal
+
+dist: bionic
+
+services:
+  - docker
+
+branches:
+  only:
+  - experimental
+
+script:
+  - ./build --tag-suffic "${TRAVIS_BUILD_NUMBER}"
+  - ./build --tag-suffic "${TRAVIS_BUILD_NUMBER}" --noavx
+
+after_success:
+  - ./push --tag-suffic "${TRAVIS_BUILD_NUMBER}"
+  - ./push --tag-suffic "${TRAVIS_BUILD_NUMBER}" --noavx

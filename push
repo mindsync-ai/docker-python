@@ -3,22 +3,19 @@ set -e
 
 usage() {
 cat << EOF
-Usage: $0 [OPTIONS] [LABEL]
-Push a newly-built image with the given LABEL to DockerHub.
+Usage: ./"${0}" [OPTIONS] [-]
+Push image to DockerHub.
 
 Options:
     --noavx			Push the image without AVX support.
-    -s, --source-image IMAGE	Tag for the source image.
+    -h, --help      Print help message.
 EOF
 }
 
-SOURCE_IMAGE_TAG='mindsync/python-cu11:latest'
-SOURCE_IMAGE_TAG_OVERRIDE=''
-TARGET_IMAGE='mindsync/python-gpu-p37-cu11'
-LABEL="latest"
-
 IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
+PASSWD_FROM_STDIN=0
+TAG_SUFFIX=''
 
 while :; do
     case "$1" in 
@@ -27,23 +24,19 @@ while :; do
             exit
             ;;
         --noavx)
-            SOURCE_IMAGE_TAG='mindsync/python-gpu-p37-cu11-noavx:latest'
-            TARGET_IMAGE='mindsync/python-gpu-p37-cu11-noavx'
             IMAGE_TAG='gpu-p37-cu11-noavx'
             ;;
-        -s|--source-image)
-            if [[ -z $2 ]]; then
-                usage
-                printf 'ERROR: No IMAGE specified after the %s flag.\n' "$1" >&2
-                exit
-            fi
-            SOURCE_IMAGE_TAG_OVERRIDE=$2
-            shift # skip the flag value
+        --tag-suffix)
+            shift
+            TAG_SUFFIX="-${1}"
             ;;
         -?*)
             usage
             printf 'ERROR: Unknown option: %s\n' "$1" >&2
             exit
+            ;;
+        -)
+            PASSWD_FROM_STDIN=1
             ;;
         *)            
             break
@@ -52,16 +45,16 @@ while :; do
     shift
 done
 
-if [[ -n "$SOURCE_IMAGE_TAG_OVERRIDE" ]]; then
-    SOURCE_IMAGE_TAG="$SOURCE_IMAGE_TAG_OVERRIDE"
+
+set -eux
+
+DOCKER_USERNAME=${DOCKER_USERNAME:-"mindsync"}
+
+if [ "${PASSWD_FROM_STDIN}" -eq 0 ]; then
+    docker login -u "${DOCKER_USERNAME}" docker.io
+else
+    read PASSWD
+    echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
-readonly SOURCE_IMAGE_TAG
-readonly TARGET_IMAGE
-readonly LABEL
-
-set -x
-docker login -u "mindsync" docker.io
-docker push "${IMAGE_NAME}:${IMAGE_TAG}"
-# docker tag "${SOURCE_IMAGE_TAG}" "${TARGET_IMAGE}:${LABEL}"
-# docker -- push "${TARGET_IMAGE}:${LABEL}"
+docker push "${IMAGE_NAME}:${IMAGE_TAG}${TAG_SUFFIX}"
