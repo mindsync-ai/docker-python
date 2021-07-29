@@ -5,9 +5,9 @@ dist: focal
 services:
   - docker
 
-# cache:
-#   directories:
-#   - "${HOME}/.build"
+cache:
+  directories:
+  - "${HOME}/.build"
 
 # stages:
 # - name: build

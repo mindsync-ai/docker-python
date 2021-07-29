@@ -78,6 +78,7 @@ fi
 docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
 
 if [ -n "${TRAVIS}" ]; then
+    mkdir -p "${HOME}/.build"
     echo "PREV_BUILD_VERSION=${BUILD_VERSION}" > "${CACHE}"
 fi
 
