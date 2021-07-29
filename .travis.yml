@@ -5,9 +5,10 @@ dist: focal
 services:
   - docker
 
-branches:
-  only:
-  - main
+# branches:
+#   only:
+#   - main
+#   - develop
 
 script:
   - docker pull "0.1.${TRAVIS_BUILD_NUMBER}-gpu-p37-cu11" || true
