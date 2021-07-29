@@ -5,34 +5,34 @@ dist: focal
 services:
   - docker
 
-# cache:
-#   directories:
-#   - "${HOME}/.build"
+cache:
+  directories:
+  - "${HOME}/.build"
 
-# stages:
-# - name: build
-# - name: push
-#   if: branch = main
+stages:
+- name: build
+- name: push
+  if: branch = main
 
-# jobs:
-#   include:
-#     - stage: build
-#       script:
-#         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
-#         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+jobs:
+  include:
+    - stage: build
+      script:
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
 
-#     - stage: push
-#       after_success:
-#         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
-#         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
+    - stage: push
+      after_success:
+        - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
+        - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
-script:
-  - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
-  - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+# script:
+#   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
+#   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
 
-after_success:
-  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
-  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
+# after_success:
+#   - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
+#   - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
 notifications:
   email:
