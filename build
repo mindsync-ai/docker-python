@@ -80,3 +80,4 @@ docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE
 if [ -n "${TRAVIS}" ]; then
     echo "PREV_BUILD_VERSION=${BUILD_VERSION}" > "${CACHE}"
 fi
+
