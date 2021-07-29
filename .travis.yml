@@ -5,10 +5,6 @@ dist: focal
 services:
   - docker
 
-cache:
-  directories:
-  - "${HOME}/.build"
-
 jobs:
   include:
     - stage: build only
