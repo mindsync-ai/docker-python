@@ -18,6 +18,8 @@ jobs:
       script:
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+
+      after_success:
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
