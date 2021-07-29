@@ -10,7 +10,8 @@ branches:
   - main
 
 script:
-  - docker --version
+  - docker pull "0.1.${TRAVIS_BUILD_NUMBER}-gpu-p37-cu11" || true
+  - docker pull "0.1.${TRAVIS_BUILD_NUMBER}-gpu-p37-cu11-noavx" || true
   - ./build --build-num "${TRAVIS_BUILD_NUMBER}"
   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --noavx
 
