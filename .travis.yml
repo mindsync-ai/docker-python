@@ -5,20 +5,26 @@ dist: focal
 services:
   - docker
 
-# branches:
-#   only:
-#   - main
-#   - develop
+cache:
+  directories:
+  - "${HOME}/.build"
 
-script:
-  # - docker pull "mindsync/python:0.1.${PREV_BUILD_NUM}-gpu-p37-cu11" || true
-  # - docker pull "mindsync/python:0.1.${PREV_BUILD_NUM}-gpu-p37-cu11-noavx" || true
-  - ./build --build-num "${TRAVIS_BUILD_NUMBER}"
-  - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --noavx
+stages:
+- name: build
+- name: push
+  if: branch = main
 
-after_success:
-  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
-  - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
+jobs:
+  include:
+    - stage: build
+      script:
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+
+    - stage: push
+      after_success:
+        - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
+        - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
 notifications:
   email:

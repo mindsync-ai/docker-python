@@ -34,10 +34,6 @@ while :; do
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
             ;;
-        --tag-suffix)
-            shift
-            TAG_SUFFIX="-${1}"
-            ;;
         --build-ver)
             shift
             BUILD_VERSION="${1}"

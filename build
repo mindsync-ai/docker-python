@@ -57,7 +57,7 @@ while :; do
     shift
 done
 
-set -eux
+set -ex
 
 if [ -n "${BUILD_NUMBER}" ]; then
     BUILD_VERSION="${BUILD_VERSION:-${DEFAULT_VERSION}}.${BUILD_NUMBER}-"
@@ -68,4 +68,15 @@ fi
 readonly CACHE_FLAG
 readonly IMAGE_TAG
 
+CACHE="${HOME}/.build/build-version"
+
+if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
+     . "${CACHE}"
+    docker pull "${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}"
+fi
+
 docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
+
+if [ -n "${TRAVIS}" ]; then
+    echo "PREV_BUILD_VERSION=${BUILD_VERSION}" > "${CACHE}"
+fi
