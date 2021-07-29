@@ -11,8 +11,8 @@ services:
 #   - develop
 
 script:
-  - docker pull "mindsync/python:0.1.${TRAVIS_BUILD_NUMBER}-gpu-p37-cu11" || true
-  - docker pull "mindsync/python:0.1.${TRAVIS_BUILD_NUMBER}-gpu-p37-cu11-noavx" || true
+  # - docker pull "mindsync/python:0.1.${PREV_BUILD_NUM}-gpu-p37-cu11" || true
+  # - docker pull "mindsync/python:0.1.${PREV_BUILD_NUM}-gpu-p37-cu11-noavx" || true
   - ./build --build-num "${TRAVIS_BUILD_NUMBER}"
   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --noavx
 
