@@ -9,30 +9,23 @@ cache:
   directories:
   - "${HOME}/.build"
 
-stages:
-- name: build
-- name: push
-  if: branch = main
-
 jobs:
   include:
-    - stage: build
+    - stage: build only
+      if: branch != main
       script:
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
 
-    - stage: push
+    - stage: build & push
+      if: branch = main
+      script:
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+
       after_success:
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
-
-# script:
-#   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
-#   - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
-
-# after_success:
-#   - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
-#   - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
 
 notifications:
   email:
