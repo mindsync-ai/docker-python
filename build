@@ -20,8 +20,7 @@ CACHE_FLAG='--no-cache'
 IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
 DOCKERFILE="Dockerfile"
-DEFAULT_VERSION='0.1'
-BUILD_VERSION=''
+BUILD_VERSION='0.1'
 BUILD_NUMBER=''
 
 while :; do
@@ -57,12 +56,16 @@ while :; do
     shift
 done
 
-set -ex
+make_build_ver() {
+    echo -n "${1}.${2}-"
+}
+
+set -x
 
 if [ -n "${BUILD_NUMBER}" ]; then
-    BUILD_VERSION="${BUILD_VERSION:-${DEFAULT_VERSION}}.${BUILD_NUMBER}-"
+    IMAGE_VERSION="$(make_build_ver "${BUILD_VERSION}" "${BUILD_NUMBER}")"
 else
-    BUILD_VERSION=''
+    IMAGE_VERSION=''
 fi
 
 readonly CACHE_FLAG
@@ -72,13 +75,8 @@ CACHE="${HOME}/.build/build-version"
 
 if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
      . "${CACHE}"
-    docker pull "${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}"
+    docker pull "${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}" || true
 fi
 
-docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
-
-if [ -n "${TRAVIS}" ]; then
-    mkdir -p "${HOME}/.build"
-    echo "PREV_BUILD_VERSION=${BUILD_VERSION}" > "${CACHE}"
-fi
+docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
 

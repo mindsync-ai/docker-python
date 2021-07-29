@@ -21,8 +21,7 @@ IMAGE_NAME='mindsync/python'
 IMAGE_TAG='gpu-p37-cu11'
 PASSWD_FROM_STDIN=0
 TAG_SUFFIX=''
-DEFAULT_VERSION='0.1'
-BUILD_VERSION=''
+BUILD_VERSION='0.1'
 BUILD_NUMBER=''
 
 while :; do
@@ -57,12 +56,16 @@ while :; do
     shift
 done
 
-set -eux
+set -ex
+
+make_build_ver() {
+    echo -n "${1}.${2}-"
+}
 
 if [ -n "${BUILD_NUMBER}" ]; then
-    BUILD_VERSION="${BUILD_VERSION:-${DEFAULT_VERSION}}.${BUILD_NUMBER}-"
+    IMAGE_VERSION="$(make_build_ver "${BUILD_VERSION}" "${BUILD_NUMBER}")"
 else
-    BUILD_VERSION=''
+    IMAGE_VERSION=''
 fi
 
 DOCKER_USERNAME=${DOCKER_USERNAME:-"mindsync"}
@@ -74,4 +77,10 @@ else
     echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
-docker push "${IMAGE_NAME}:${BUILD_VERSION}${IMAGE_TAG}"
+docker push "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
+
+if [ -n "${TRAVIS}" ]; then
+    mkdir -p "${HOME}/.build"
+    CACHE="${HOME}/.build/build-version"
+    echo "PREV_BUILD_VERSION=${IMAGE_VERSION}" > "${CACHE}"
+fi
