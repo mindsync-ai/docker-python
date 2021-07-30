@@ -71,5 +71,13 @@ fi
 readonly CACHE_FLAG
 readonly IMAGE_TAG
 
-docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
+CACHE="${HOME}/.build/build-version"
 
+if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
+     . "${CACHE}"
+    FULL_IMAGE_NAME="${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}"
+    docker pull "${FULL_IMAGE_NAME}" || true
+    docker build --rm --pull --cache-from "${FULL_IMAGE_NAME}" ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
+else
+    docker build --rm --pull ${CACHE_FLAG} -t "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" -f "${DOCKERFILE}" .
+fi

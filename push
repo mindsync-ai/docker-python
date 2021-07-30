@@ -78,3 +78,9 @@ else
 fi
 
 docker push "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
+
+if [ -n "${TRAVIS}" ]; then
+    mkdir -p "${HOME}/.build"
+    CACHE="${HOME}/.build/build-version"
+    echo "PREV_BUILD_VERSION=${IMAGE_VERSION}" > "${CACHE}"
+fi
