@@ -255,7 +255,8 @@ COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
 
 # Install customizations
 COPY --chown="${NB_UID}:${NB_GID}" custom /home/${NB_USER}/.jupyter/custom
-COPY --chown="${NB_UID}:${NB_GID}" custom.py /usr/local/bin/custom.py
+COPY --chown="${NB_UID}:${NB_GID}" scripts/custom.py /usr/local/bin/custom.py
+COPY --chown="${NB_UID}:${NB_GID}" scripts/mindsync.py /usr/local/bin/mindsync.py
 
 # Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
 COPY jupyter_notebook_config.py /etc/jupyter/
@@ -268,6 +269,7 @@ RUN sed -re "s/c.NotebookApp/c.ServerApp/g" \
     /etc/jupyter/jupyter_notebook_config.py > /etc/jupyter/jupyter_server_config.py && \
     fix-permissions /etc/jupyter/ && \
     chmod a+rx /usr/local/bin/custom.py \
+               /usr/local/bin/mindsync.py \
                /usr/local/bin/start-notebook.sh \
                /usr/local/bin/start.sh \
                /usr/local/bin/start-singleuser.sh
