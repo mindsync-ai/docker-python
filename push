@@ -77,7 +77,15 @@ else
     echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
+docker tag "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" "${IMAGE_NAME}:latest-${IMAGE_TAG}"
+
 docker push "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
+docker push "${IMAGE_NAME}:latest-${IMAGE_TAG}"
+
+if [ "$(echo ${IMAGE_TAG} | grep "noavx")" == "" ]; then
+    docker tag "${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}" "${IMAGE_NAME}:latest"
+    docker push "${IMAGE_NAME}:latest"
+fi
 
 if [ -n "${TRAVIS}" ]; then
     mkdir -p "${HOME}/.build"
