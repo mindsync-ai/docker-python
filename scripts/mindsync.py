@@ -6,7 +6,7 @@ import requests
 import json
 import zipfile
 
-PATH = '/home/mindsync/work'
+PATH = '/home/mindsync/work/'
 
 def get_info(api, token, hash):
     url = api + '/codes/' + hash
