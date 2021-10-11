@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import argparse
 import requests
 import json
@@ -16,14 +17,21 @@ def get_info(api, token, hash):
     r = requests.get(url, headers=headers)
     return json.loads(r.content)
 
-def download(token, name, link, ext = ''):
+def download(token, name, link):
     headers = {
         'api-rent-key': token,
     }
     r = requests.get(link, headers=headers)
-    f = open(PATH + name + ext, "wb")
+    
+    if r.headers['Content-Disposition']:
+        filename = PATH + re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0]
+    else:
+        filename = PATH + name
+        
+    f = open(filename, "wb")
     f.write(r.content)
     f.close()
+    return filename
 
 def main():
     ap = argparse.ArgumentParser()
@@ -43,12 +51,12 @@ def main():
             print('{"error":"' + info['error']['message'] + '", "success": false}')
             return
 
-        download(token, info['result']['name'], info['result']['attachmentLink'], '.ipynb')
+        download(token, info['result']['name'], info['result']['attachmentLink'])
         for dataset in info['result']['datasetList']:
-            download(token, dataset['hash'], dataset['zipLink'])
-            with zipfile.ZipFile(PATH + dataset['hash'], 'r') as zip_ref:
+            filename = download(token, dataset['hash'], dataset['zipLink'])
+            with zipfile.ZipFile(filename, 'r') as zip_ref:
                 zip_ref.extractall(PATH)
-            os.unlink(PATH + dataset['hash'])
+            os.unlink(filename)
 
     print('{"success":true}')
 
