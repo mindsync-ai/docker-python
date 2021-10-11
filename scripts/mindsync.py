@@ -30,6 +30,7 @@ def download(token, name, link):
     f = open(filename, "wb")
     f.write(r.content)
     f.close()
+    return filename
 
 def main():
     ap = argparse.ArgumentParser()
