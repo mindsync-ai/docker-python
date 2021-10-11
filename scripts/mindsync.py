@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import argparse
 import requests
 import json
@@ -23,7 +24,7 @@ def download(token, name, link):
     r = requests.get(link, headers=headers)
     
         if r.headers['Content-Disposition']:
-        filename = re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0]
+        filename = PATH + re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0]
     else:
         filename = PATH + name
         
