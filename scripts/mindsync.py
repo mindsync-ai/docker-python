@@ -23,7 +23,7 @@ def download(token, name, link):
     }
     r = requests.get(link, headers=headers)
     
-        if r.headers['Content-Disposition']:
+    if r.headers['Content-Disposition']:
         filename = PATH + re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0]
     else:
         filename = PATH + name
