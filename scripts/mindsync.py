@@ -8,6 +8,21 @@ import json
 import zipfile
 
 PATH = '/home/mindsync/work/'
+CONFIG = '/tmp/mindsync.json'
+
+def read_config():
+    try:
+        f = open(CONFIG, 'r')
+        config = json.loads(f.read())
+        f.close()
+    except:
+        config = {}
+    return config
+
+def save_config(config):
+    f = open(CONFIG, 'w', encoding='utf8')
+    json.dump(config, f)
+    f.close()
 
 def get_info(api, token, hash):
     url = api + '/codes/' + hash
@@ -28,7 +43,7 @@ def download(token, name, link):
     else:
         filename = PATH + name
         
-    f = open(filename, "wb")
+    f = open(filename, 'wb')
     f.write(r.content)
     f.close()
     return filename
@@ -45,13 +60,22 @@ def main():
     code = args['mindsync.code']
 
     if code:
+    
+        config = read_config()
+        
         info = get_info(api, token, code)
 
         if info['error']:
             print('{"error":"' + info['error']['message'] + '", "success": false}')
             return
 
-        download(token, info['result']['name'], info['result']['attachmentLink'])
+        filename = download(token, info['result']['name'], info['result']['attachmentLink'])
+
+        config[filename] = info
+        config['token'] = token
+        config['api'] = api        
+        save_config(config)
+        
         for dataset in info['result']['datasetList']:
             filename = download(token, dataset['hash'], dataset['zipLink'])
             with zipfile.ZipFile(filename, 'r') as zip_ref:

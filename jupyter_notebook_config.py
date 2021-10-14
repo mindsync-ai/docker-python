@@ -4,8 +4,10 @@
 from jupyter_core.paths import jupyter_data_dir
 import subprocess
 import os
+import json
 import errno
 import stat
+import requests
 
 c = get_config()  # noqa: F821
 c.NotebookApp.ip = '0.0.0.0'
@@ -53,3 +55,27 @@ distinguished_name = req_distinguished_name
 # the environment
 if 'NB_UMASK' in os.environ:
     os.umask(int(os.environ['NB_UMASK'], 8))
+
+def mindsync_read_config():
+    try:
+        f = open('/tmp/mindsync.json', 'r')
+        config = json.loads(f.read())
+        f.close()
+    except:
+        config = {}
+    return config
+
+def mindsync_save_notebook(filename, content):
+    config = mindsync_read_config()
+    if filename in config:
+        url = config['api'] + '/codes/' + config[filename]['result']['hash']
+        s = requests.Session()
+        s.headers.update({'api-rent-key': config['token']})
+        s.put(url, files={'file': (filename, content,'application/octet-stream')})
+
+def post_save(model, os_path, contents_manager):
+    if model['type'] != 'notebook':
+        return
+    mindsync_save_notebook(os_path, open(os_path, 'r').read())
+
+c.FileContentsManager.post_save_hook = post_save
