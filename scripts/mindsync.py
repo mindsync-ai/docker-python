@@ -10,19 +10,19 @@ import zipfile
 PATH = '/home/mindsync/work/'
 CONFIG = '/tmp/mindsync.json'
 
+
 def read_config():
     try:
-        f = open(CONFIG, 'r')
-        config = json.loads(f.read())
-        f.close()
+        with open(CONFIG) as f:
+            return json.load(f)
     except:
-        config = {}
-    return config
+        return dict()
+
 
 def save_config(config):
-    f = open(CONFIG, 'w', encoding='utf8')
-    json.dump(config, f)
-    f.close()
+    with open(CONFIG, 'w', encoding='utf8') as f:
+        json.dump(config, f)
+
 
 def get_info(api, token, hash):
     url = api + '/codes/' + hash
@@ -31,6 +31,7 @@ def get_info(api, token, hash):
     }
     r = requests.get(url, headers=headers)
     return json.loads(r.content)
+
 
 def download(token, name, link):
     headers = {
@@ -43,10 +44,11 @@ def download(token, name, link):
     else:
         filename = PATH + name
         
-    f = open(filename, 'wb')
-    f.write(r.content)
-    f.close()
+    with open(filename, 'wb') as f:
+        f.write(r.content)
+
     return filename
+
 
 def main():
     ap = argparse.ArgumentParser()
