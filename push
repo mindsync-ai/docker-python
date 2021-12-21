@@ -77,10 +77,13 @@ else
     echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
+MINIMAL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}minimal"
+docker tag "${MINIMAL_IMAGE_NAME}" "${IMAGE_NAME}:latest-minimal"
+docker push "${MINIMAL_IMAGE_NAME}"
+docker push "${IMAGE_NAME}:latest-minimal"
+
 SOURCE_IMAGE="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
-
 docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-${IMAGE_TAG}"
-
 docker push "${SOURCE_IMAGE}"
 docker push "${IMAGE_NAME}:latest-${IMAGE_TAG}"
 

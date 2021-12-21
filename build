@@ -73,6 +73,8 @@ readonly IMAGE_TAG
 
 CACHE="${HOME}/.build/build-version"
 
+docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
+
 if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
      . "${CACHE}"
     FULL_IMAGE_NAME="${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}"
