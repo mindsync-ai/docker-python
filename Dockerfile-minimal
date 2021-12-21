@@ -6,11 +6,34 @@ ARG NB_USER="jovyan"
 
 USER root
 
-ADD custom /home/${NB_USER}/.jupyter/custom
-ADD custom.py /usr/local/bin
-ADD start-notebook.sh /usr/local/bin
+# Copy local files as late as possible to avoid cache busting
+COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
 
-RUN apt update && apt install -y cron
+# Install customizations
+COPY --chown="${NB_UID}:${NB_GID}" custom /home/${NB_USER}/.jupyter/custom
+COPY --chown="${NB_UID}:${NB_GID}" scripts/custom.py /usr/local/bin/custom.py
+COPY --chown="${NB_UID}:${NB_GID}" scripts/mindsync.py /usr/local/bin/mindsync.py
 
-# Switch back to jovyan to avoid accidental container runs as root
-# USER ${NB_UID}
+# Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
+COPY jupyter_notebook_config.py /etc/jupyter/
+
+# Prepare upgrade to JupyterLab V3.0 #1205
+RUN sed -re "s/c.NotebookApp/c.ServerApp/g" \
+    /etc/jupyter/jupyter_notebook_config.py > /etc/jupyter/jupyter_server_config.py && \
+    fix-permissions /etc/jupyter/ && \
+    chmod a+rx /usr/local/bin/custom.py \
+               /usr/local/bin/mindsync.py \
+               /usr/local/bin/start-notebook.sh \
+               /usr/local/bin/start.sh \
+               /usr/local/bin/start-singleuser.sh
+
+RUN rm -rf /tmp/*
+
+USER $NB_UID
+
+RUN rm -rf "${HOME}/.cache/*"
+
+# EXPOSE 8888
+# WORKDIR "${HOME}/work"
+# ENTRYPOINT ["tini", "-g", "--"]
+# CMD ["start-notebook.sh"]
