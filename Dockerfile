@@ -246,7 +246,8 @@ RUN jupyter nbextension enable --py --sys-prefix ipyleaflet && \
     jupyter labextension install jupyterlab-plotly \
                                  @jupyter-widgets/jupyterlab-manager \
                                  plotlywidget \
-                                 @ijmbarr/jupyterlab_spellchecker
+                                 @ijmbarr/jupyterlab_spellchecker || \
+                                 tail -n +1 /tmp/*.log
 
 #RUN fix-permissions "${CONDA_DIR}" "/home/${NB_USER}"
 

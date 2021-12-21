@@ -24,6 +24,8 @@ jobs:
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
+      after_script:
+        - tail -n +1 /tmp/*.log
 
 notifications:
   email:
