@@ -243,11 +243,17 @@ RUN pip install --upgrade pip && \
     jupyterlab-drawio==0.9.0 \
     jupyter_contrib_nbextensions==0.5.1 \
     jupyter_nbextensions_configurator==0.4.1 \
+    absl-py==0.14.1 \
+    google-auth==1.35.0 \
+    lxml==4.6.3 \
+    Markdown==3.3.4 \
+    rsa==4.7.2 \
+    tensorboard==2.6.0 \
+    Werkzeug==2.0.1 \
     rise==5.7.1 && \
     rm -rf "${HOME}/${TENSORFLOW_WHL}"
 
-RUN pip freeze
-RUN conda list --export
+RUN pip freeze && conda list --export
 
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet && \
     jupyter labextension install jupyterlab-plotly \

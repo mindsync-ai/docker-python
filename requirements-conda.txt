@@ -214,6 +214,7 @@ psutil=5.8.0=py37h5e8e339_1
 ptyprocess=0.7.0=pyhd3deb0d_0
 # pyasn1=0.4.8=pypi_0
 # pyasn1-modules=0.2.8=pypi_0
+pybind11-abi=4=hd8ed1ab_3
 pycosat=0.6.3=py37h5e8e339_1006
 pycparser=2.20=pyh9f0ad1d_2
 pycurl=7.44.1=py37h88a64d2_0
@@ -294,6 +295,7 @@ widgetsnbextension=3.5.1=py37h89c1867_4
 xlrd=2.0.1=pyhd8ed1ab_3
 xz=5.2.5=h516909a_1
 yaml=0.2.5=h516909a_0
+yaml-cpp=0.6.3=he1b5a44_4
 zeromq=4.3.4=h9c3ff4c_1
 zfp=0.5.5=h9c3ff4c_7
 zict=2.0.0=py_0
