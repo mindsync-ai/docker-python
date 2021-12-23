@@ -173,52 +173,12 @@ RUN wget --quiet "https://github.com/conda-forge/miniforge/releases/download/${m
 # Correct permissions
 # Do all this in a single RUN command to avoid duplicating all of the
 # files across image layers when the permissions change
-# RUN conda install --quiet --yes \
-#     'notebook=6.2.0' \
-#     'jupyterhub=1.3.0' \
-#     'jupyterlab=3.0.12' \
-#     'beautifulsoup4=4.9.*' \
-#     'conda-forge::blas=*=openblas' \
-#     'bokeh=2.3.*' \
-#     'bottleneck=1.3.*' \
-#     'cloudpickle=1.6.*' \
-#     'cython=0.29.*' \
-#     'dask=2021.3.*' \
-#     'dill=0.3.*' \
-#     'h5py=3.1.*' \
-#     'ipywidgets=7.6.*' \
-#     'ipympl=0.6.*'\
-#     'matplotlib-base=3.3.*' \
-#     'numba=0.53.*' \
-#     'numexpr=2.7.*' \
-#     'pandas=1.2.*' \
-#     'patsy=0.5.*' \
-#     'protobuf=3.15.*' \
-#     'pytables=3.6.*' \
-#     'scikit-image=0.18.*' \
-#     'scikit-learn=0.24.*' \
-#     'scipy=1.6.*' \
-#     'seaborn=0.11.*' \
-#     'sqlalchemy=1.4.*' \
-#     'statsmodels=0.12.*' \
-#     'sympy=1.7.*' \
-#     'vincent=0.4.*' \
-#     'widgetsnbextension=3.5.*' \
-#     'xlrd=2.0.*' \
-#     pyyaml \
-#     mkl \
-#     mkl-include \
-#     setuptools \
-#     cmake \
-#     cffi \
-#     typing && \
-#     conda clean --all -f -y && \
-#     npm cache clean --force && \
-#     jupyter notebook --generate-config && \
-#     jupyter lab clean
-
 COPY requirements-conda.txt ./
-RUN conda install --name base --file requirements-conda.txt
+RUN conda install --quiet --yes --name base --file requirements-conda.txt && \
+        conda clean --all -f -y && \
+        npm cache clean --force && \
+        jupyter notebook --generate-config && \
+        jupyter lab clean
 
 # Install facets which does not have a pip or conda package at the moment
 RUN git clone https://github.com/PAIR-code/facets.git && \
@@ -239,7 +199,7 @@ RUN pip install --upgrade pip && \
     keras==2.6.0 \
     ipyleaflet==0.14.0 \
     plotly==5.3.1 \
-    "ipywidgets>=7.5" \
+    "ipywidgets==7.6.5" \
     jupyterlab-drawio==0.9.0 \
     jupyter_contrib_nbextensions==0.5.1 \
     jupyter_nbextensions_configurator==0.4.1 \
@@ -252,8 +212,6 @@ RUN pip install --upgrade pip && \
     Werkzeug==2.0.1 \
     rise==5.7.1 && \
     rm -rf "${HOME}/${TENSORFLOW_WHL}"
-
-RUN pip freeze && conda list --export
 
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet && \
     jupyter labextension install jupyterlab-plotly \
