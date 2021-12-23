@@ -33,7 +33,7 @@ USER $NB_UID
 
 RUN rm -rf "${HOME}/.cache/*"
 
-# EXPOSE 8888
-# WORKDIR "${HOME}/work"
-# ENTRYPOINT ["tini", "-g", "--"]
-# CMD ["start-notebook.sh"]
+EXPOSE 8888
+WORKDIR "${HOME}/work"
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["start-notebook.sh"]
