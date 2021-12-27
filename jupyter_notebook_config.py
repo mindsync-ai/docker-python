@@ -67,6 +67,7 @@ def mindsync_read_config():
 
 def mindsync_save_notebook(filename, content):
     config = mindsync_read_config()
+    print(config)
     if filename in config:
         url = config['api'] + '/codes/' + config[filename]['result']['hash']
         print(f'Url: {url}')
@@ -82,4 +83,9 @@ def post_save(model, os_path, contents_manager):
     mindsync_save_notebook(os_path, open(os_path, 'r').read())
 
 
+def pre_save(model, path, contents_manager, **kwargs):
+    print(f'Pre save, path [{path}]')
+
+
+c.FileContentsManager.pre_save_hook = pre_save
 c.FileContentsManager.post_save_hook = post_save
