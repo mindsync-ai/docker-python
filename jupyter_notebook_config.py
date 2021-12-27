@@ -67,16 +67,19 @@ def mindsync_read_config():
 
 def mindsync_save_notebook(filename, content):
     config = mindsync_read_config()
-    if filename in config:
+    if filename in config or filename in config.values():
         url = config['api'] + '/codes/' + config[filename]['result']['hash']
+        print(f'Url: {url}')
         s = requests.Session()
         s.headers.update({'api-rent-key': config['token']})
         s.put(url, files={'file': (filename, content,'application/octet-stream')})
 
 
 def post_save(model, os_path, contents_manager):
+    print(f'Post save, path [{os_path}]')
     if model['type'] != 'notebook':
         return
     mindsync_save_notebook(os_path, open(os_path, 'r').read())
+
 
 c.FileContentsManager.post_save_hook = post_save
