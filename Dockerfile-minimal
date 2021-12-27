@@ -32,3 +32,5 @@ RUN rm -rf /tmp/*
 USER $NB_UID
 
 RUN rm -rf "${HOME}/.cache/*"
+WORKDIR "${HOME}/work"
+
