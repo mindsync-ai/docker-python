@@ -7,8 +7,7 @@ import requests
 import json
 import zipfile
 
-
-WORK_DIR = os.path.join(os.environ['HOME'], 'work')
+PATH = '/home/mindsync/work/'
 CONFIG = '/tmp/mindsync.json'
 
 
@@ -41,10 +40,10 @@ def download(token, name, link):
     r = requests.get(link, headers=headers)
     
     if r.headers['Content-Disposition']:
-        filename = os.path.join(WORK_DIR, re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0])
+        filename = PATH + re.findall("filename=\"(.+)\"", r.headers["Content-Disposition"])[0]
     else:
-        filename = os.path.join(WORK_DIR, name)
-
+        filename = PATH + name
+        
     with open(filename, 'wb') as f:
         f.write(r.content)
 
@@ -82,7 +81,7 @@ def main():
         for dataset in info['result']['datasetList']:
             filename = download(token, dataset['hash'], dataset['zipLink'])
             with zipfile.ZipFile(filename, 'r') as zip_ref:
-                zip_ref.extractall(WORK_DIR)
+                zip_ref.extractall(PATH)
             os.unlink(filename)
 
     print('{"success":true}')
