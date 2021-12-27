@@ -14,14 +14,14 @@ jobs:
     - stage: build only
       if: branch != main
       script:
-        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache -minimal
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --minimal
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
 
     - stage: build & push
       if: branch = main
       script:
-        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache -minimal
+        - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --minimal
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
         - ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
         - echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --minimal -
