@@ -10,6 +10,7 @@ Use dash to designate hub password is supplied by stdin.
 
 Options:
     --noavx			Push the image without AVX support.
+    --minimal       Push minimal image allowing editing notebooks.
     --build-num     Build number to include into verseion number of the target image.
                     If not specified no version included (default: '')
     --build-ver     Build image version (default: 0.1)
@@ -23,12 +24,16 @@ PASSWD_FROM_STDIN=0
 TAG_SUFFIX=''
 BUILD_VERSION='0.1'
 BUILD_NUMBER=''
+MINIMAL=
 
 while :; do
     case "$1" in 
         -h|--help)
             usage
             exit
+            ;;
+        --minimal)
+            MINIMAL='1'
             ;;
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
@@ -77,10 +82,13 @@ else
     echo ${PASSWD} | docker login -u "${DOCKER_USERNAME}" docker.io --password-stdin
 fi
 
-MINIMAL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}minimal"
-docker tag "${MINIMAL_IMAGE_NAME}" "${IMAGE_NAME}:latest-minimal"
-docker push "${MINIMAL_IMAGE_NAME}"
-docker push "${IMAGE_NAME}:latest-minimal"
+if [ -n "${MINIMAL}" ]; then
+    MINIMAL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}minimal"
+    docker tag "${MINIMAL_IMAGE_NAME}" "${IMAGE_NAME}:latest-minimal"
+    docker push "${MINIMAL_IMAGE_NAME}"
+    docker push "${IMAGE_NAME}:latest-minimal"
+    exit 0
+fi 
 
 SOURCE_IMAGE="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
 docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-${IMAGE_TAG}"

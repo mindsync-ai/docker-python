@@ -8,6 +8,7 @@ import json
 import errno
 import stat
 import requests
+import sys
 
 c = get_config()  # noqa: F821
 c.NotebookApp.ip = '0.0.0.0'
@@ -67,10 +68,10 @@ def mindsync_read_config():
 
 def mindsync_save_notebook(filename, content):
     config = mindsync_read_config()
-    print(config)
+    print(f'Config: {config}', file=sys.stderr)
     if filename in config:
         url = config['api'] + '/codes/' + config[filename]['result']['hash']
-        print(f'Url: {url}')
+        print(f'Url: {url}', file=sys.stderr)
         s = requests.Session()
         s.headers.update({'api-rent-key': config['token']})
         s.put(url, files={'file': (filename, content,'application/octet-stream')})

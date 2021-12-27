@@ -9,6 +9,7 @@ Build Mindsync Docker Python images.
 Options:
     -c, --use-cache Use layer cache when building a new image.
     --noavx         Build jupyter image with tensorflow having no AVX support.
+    --minimal       Build minimal image allowing editing notebooks.
     --build-num     Build number to include into verseion number of the target image.
                     If not specified no version included (default: '')
     --build-ver     Build image version (default: 0.1)
@@ -22,12 +23,16 @@ IMAGE_TAG='gpu-p37-cu11'
 DOCKERFILE="Dockerfile"
 BUILD_VERSION='0.1'
 BUILD_NUMBER=''
+MINIMAL=
 
 while :; do
     case "$1" in 
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
             DOCKERFILE='Dockerfile-noavx'
+            ;;
+        --minimal)
+            MINIMAL='1'
             ;;
         -h|--help)
             usage
@@ -73,7 +78,10 @@ readonly IMAGE_TAG
 
 CACHE="${HOME}/.build/build-version"
 
-docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
+if [ -n "${MINIMAL}" ]; then
+    docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
+    exit 0
+fi 
 
 if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
      . "${CACHE}"
