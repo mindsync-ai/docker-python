@@ -8,7 +8,7 @@ import json
 import zipfile
 
 
-WORK_DIR = os.path.join(os.environ['HOME'], 'work')
+WORK_DIR = os.environ['HOME']
 CONFIG = '/tmp/mindsync.json'
 
 
