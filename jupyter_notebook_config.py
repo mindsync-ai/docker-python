@@ -74,7 +74,9 @@ def mindsync_save_notebook(filename, content):
         print(f'Url: {url}', file=sys.stderr)
         s = requests.Session()
         s.headers.update({'api-rent-key': config['token']})
-        s.put(url, files={'file': (filename, content,'application/octet-stream')})
+        resp = s.put(url, files={'file': (filename, content,'application/octet-stream')})
+        print(f'Response: {resp}', file=sys.stderr)
+        print(f'Response text: {resp.text}', file=sys.stderr)
 
 
 def post_save(model, os_path, contents_manager):
