@@ -68,6 +68,7 @@ def mindsync_read_config():
 
 def mindsync_save_notebook(filename, content):
     config = mindsync_read_config()
+    print(f'Filename: {filename}\nContent: {content}', file=sys.stderr)
     print(f'Config: {config}', file=sys.stderr)
     if filename in config:
         url = config['api'] + '/codes/' + config[filename]['result']['hash']
