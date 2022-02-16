@@ -98,9 +98,11 @@ docker push "${IMAGE_NAME}:latest-${IMAGE_TAG}"
 if [ "$(echo ${IMAGE_TAG} | grep "noavx")" == "" ]; then
     docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest"
     docker push "${IMAGE_NAME}:latest"
+    docker push "${IMAGE_NAME}:latest-vastai"
 else
     docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-noavx"
     docker push "${IMAGE_NAME}:latest-noavx"
+    docker push "${IMAGE_NAME}:latest-vastai-noavx"
 fi
 
 if [ -n "${TRAVIS}" ]; then
