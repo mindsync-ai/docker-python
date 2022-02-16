@@ -104,9 +104,3 @@ else
     docker push "${IMAGE_NAME}:latest-noavx"
     docker push "${IMAGE_NAME}:latest-vastai-noavx"
 fi
-
-if [ -n "${TRAVIS}" ]; then
-    mkdir -p "${HOME}/.build"
-    CACHE="${HOME}/.build/build-version"
-    echo "PREV_BUILD_VERSION=${IMAGE_VERSION}" > "${CACHE}"
-fi

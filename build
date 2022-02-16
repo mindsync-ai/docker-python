@@ -24,14 +24,17 @@ DOCKERFILE="Dockerfile"
 BUILD_VERSION='0.1'
 BUILD_NUMBER=
 MINIMAL=
-VAST_IMAGE_NAME="mindsync/python:latest-vastai"
+VAST_IMAGE_NAME=mindsync/python:latest-vastai
+CACHE_IMAGE_TAG=latest
+
 
 while :; do
     case "$1" in 
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
             DOCKERFILE='Dockerfile-noavx'
-            VAST_IMAGE_NAME="mindsync/python:latest-vastai-noavx"
+            VAST_IMAGE_NAME=mindsync/python:latest-vastai-noavx
+            CACHE_IMAGE_TAG=latest-noavx
             ;;
         --minimal)
             MINIMAL='1'
@@ -78,7 +81,7 @@ fi
 readonly CACHE_FLAG
 readonly IMAGE_TAG
 
-CACHE="${HOME}/.build/build-version"
+# CACHE="${HOME}/.build/build-version"
 
 if [ -n "${MINIMAL}" ]; then
     docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
@@ -86,14 +89,14 @@ if [ -n "${MINIMAL}" ]; then
 fi 
 
 FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
+FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${CACHE_IMAGE_TAG}"
 
-if [ -n "${TRAVIS}" ] && [ -f "${CACHE}" ]; then
-     . "${CACHE}"
-    FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${PREV_BUILD_VERSION}${IMAGE_TAG}"
-    docker pull "${FULL_CACHE_IMAGE_NAME}" || true
-    docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" .
+# docker pull "${FULL_CACHE_IMAGE_NAME}" || true
+
+if [ -z "${CACHE_FLAG}" ]; then
+    docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
 else
-    docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" .
+    docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
 fi
 
 docker build --build-arg "BASE=${FULL_IMAGE_NAME}" -t "${VAST_IMAGE_NAME}" -f Dockerfile-vastai .
