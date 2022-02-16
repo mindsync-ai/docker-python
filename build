@@ -78,11 +78,6 @@ else
     IMAGE_VERSION=
 fi
 
-readonly CACHE_FLAG
-readonly IMAGE_TAG
-
-# CACHE="${HOME}/.build/build-version"
-
 if [ -n "${MINIMAL}" ]; then
     docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
     exit 0
@@ -90,8 +85,6 @@ fi
 
 FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
 FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${CACHE_IMAGE_TAG}"
-
-# docker pull "${FULL_CACHE_IMAGE_NAME}" || true
 
 if [ -z "${CACHE_FLAG}" ]; then
     docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
