@@ -86,16 +86,10 @@ fi
 FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
 FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${CACHE_IMAGE_TAG}"
 
-# if [ -z "${CACHE_FLAG}" ]; then
-#     docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
-# else
-#     docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
-# fi
-
 if [ -z "${CACHE_FLAG}" ]; then
-    docker build --rm --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
+    DOCKER_BUILDKIT=1 docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
 else
-    docker build --rm ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
+    DOCKER_BUILDKIT=1 docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
 fi
 
 docker build --build-arg "BASE=${FULL_IMAGE_NAME}" -t "${VAST_IMAGE_NAME}" -f Dockerfile-vastai .
