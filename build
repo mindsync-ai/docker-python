@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 usage() {
@@ -29,7 +30,7 @@ CACHE_IMAGE_TAG=latest
 
 
 while :; do
-    case "$1" in 
+    case "${1}" in 
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
             DOCKERFILE='Dockerfile-noavx'

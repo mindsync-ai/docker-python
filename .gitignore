@@ -2,3 +2,5 @@
 __pycache__
 .vscode
 .temp
+.env
+.secret.env

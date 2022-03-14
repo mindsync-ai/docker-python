@@ -11,6 +11,7 @@ Use dash to designate hub password is supplied by stdin.
 Options:
     --noavx			Push the image without AVX support.
     --minimal       Push minimal image allowing editing notebooks.
+    --stage         Build and push as stage image.
     --build-num     Build number to include into verseion number of the target image.
                     If not specified no version included (default: '')
     --build-ver     Build image version (default: 0.1)
@@ -25,6 +26,7 @@ TAG_SUFFIX=''
 BUILD_VERSION='0.1'
 BUILD_NUMBER=''
 MINIMAL=
+STAGE=0
 
 while :; do
     case "$1" in 
@@ -37,6 +39,9 @@ while :; do
             ;;
         --noavx)
             IMAGE_TAG='gpu-p37-cu11-noavx'
+            ;;
+        --stage)
+            STAGE=1
             ;;
         --build-ver)
             shift
@@ -87,10 +92,25 @@ if [ -n "${MINIMAL}" ]; then
     docker tag "${MINIMAL_IMAGE_NAME}" "${IMAGE_NAME}:latest-minimal"
     docker push "${MINIMAL_IMAGE_NAME}"
     docker push "${IMAGE_NAME}:latest-minimal"
+    echo Done
     exit 0
 fi 
 
 SOURCE_IMAGE="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
+
+if [ -n "${STAGE}" ]; then
+    if [ "$(echo ${IMAGE_TAG} | grep "noavx")" == "" ]; then
+        docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-stage"
+        docker push "${IMAGE_NAME}:latest-stage"
+    else
+        docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-stage-noavx"
+        docker push "${IMAGE_NAME}:latest-stage-noavx"
+    fi
+
+    echo Done
+    exit 0
+fi
+
 docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-${IMAGE_TAG}"
 docker push "${SOURCE_IMAGE}"
 docker push "${IMAGE_NAME}:latest-${IMAGE_TAG}"
@@ -104,3 +124,5 @@ else
     docker push "${IMAGE_NAME}:latest-noavx"
     docker push "${IMAGE_NAME}:latest-vastai-noavx"
 fi
+
+echo Done

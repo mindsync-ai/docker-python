@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -e
+
+OS_NAME="$(uname -s)"
+case "${OS_NAME}" in
+    Darwin*)
+        realpath() {
+            [[ $1 = /* ]] && echo "$1" || echo "${PWD}/${1#./}"
+        }
+    ;;
+esac
+
+usage() {
+cat << EOF
+Build and push Mindsync docker python stage labeled image.
+
+Usage: "${0}" [OPTIONS]
+
+Use .secret.env file to provide 
+DOCKER_USERNAME=user
+DOCKER_PASSWORD=password
+
+Or this usage
+DOCKER_USERNAME=user DOCKER_PASSWORD=password "${0}" [OPTIONS]
+
+All the options passed to build and push scripts as is.
+
+Options:
+    <build options> Build regarded options
+    <push options>  Push regarded options
+    -h, --help      Print help message.
+EOF
+}
+
+SCRIPT_DIR="$(dirname $(realpath $(basename ${0})))"
+
+for arg in "${@}" ; do
+    case "${arg}" in 
+        -h|--help)
+            usage
+            echo -e "\033[34m\nBuild options\033[0m"
+            "${SCRIPT_DIR}/build" --help
+            echo -e "\033[34m\nPush options\033[0m"
+            "${SCRIPT_DIR}/push" --help
+            exit
+            ;;
+    esac
+done
+
+if [ -z "${DOCKER_USERNAME}" ] && [ -z "${DOCKER_USERNAME}" ]; then
+    if [ -f "${SCRIPT_DIR}/.secret.env" ]; then
+        export $(cat "${SCRIPT_DIR}/.secret.env")
+    else 
+        echo -e "\033[34mDOCKER_USERNAME and DOCKER_PASSWORD envs definition is required\033[0m" > /dev/stderr
+        exit 1
+    fi
+fi
+
+echo -e "\033[35mBuilding...\033[0m"
+"${SCRIPT_DIR}/build" "${@}"
+echo -e "\033[35mPushing...\033[0m"
+echo "${DOCKER_PASSWORD}" | "${SCRIPT_DIR}/push" --stage "${@}" -
