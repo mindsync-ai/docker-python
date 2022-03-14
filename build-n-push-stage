@@ -48,11 +48,11 @@ for arg in "${@}" ; do
     esac
 done
 
-if [ -z "${DOCKER_USERNAME}" ] && [ -z "${DOCKER_USERNAME}" ]; then
+if [ -z "${DOCKER_USERNAME}" ] || [ -z "${DOCKER_PASSWORD}" ]; then
     if [ -f "${SCRIPT_DIR}/.secret.env" ]; then
         export $(cat "${SCRIPT_DIR}/.secret.env")
     else 
-        echo -e "\033[34mDOCKER_USERNAME and DOCKER_PASSWORD envs definition is required\033[0m" > /dev/stderr
+        echo -e "\033[31mDOCKER_USERNAME and DOCKER_PASSWORD envs definition is required\033[0m" > /dev/stderr
         exit 1
     fi
 fi
