@@ -35,6 +35,7 @@ EOF
 
 SCRIPT_DIR="$(dirname $(realpath $(basename ${0})))"
 
+
 for arg in "${@}" ; do
     case "${arg}" in 
         -h|--help)
@@ -57,7 +58,18 @@ if [ -z "${DOCKER_USERNAME}" ] || [ -z "${DOCKER_PASSWORD}" ]; then
     fi
 fi
 
+
 echo -e "\033[35mBuilding...\033[0m"
 "${SCRIPT_DIR}/build" "${@}"
+
+for arg in "${@}" ; do
+    case "${arg}" in 
+        -c|--use-cache)
+            shift
+            break
+            ;;
+    esac
+done
+
 echo -e "\033[35mPushing...\033[0m"
 echo "${DOCKER_PASSWORD}" | "${SCRIPT_DIR}/push" --stage "${@}" -
