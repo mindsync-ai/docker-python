@@ -249,6 +249,9 @@ RUN sed -re "s/c.NotebookApp/c.ServerApp/g" \
 
 RUN rm -rf /tmp/*
 
+ARG IMAGE_NAME="undefined"
+RUN echo "{\"fullName\": \"${IMAGE_NAME}\"}" > /etc/mindsync.json
+
 USER $NB_UID
 
 RUN rm -rf "${HOME}/.cache/*"

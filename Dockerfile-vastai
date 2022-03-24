@@ -2,3 +2,6 @@ ARG BASE
 FROM ${BASE}
 
 USER root
+
+ARG IMAGE_NAME="undefined"
+RUN echo "{\"fullName\": \"${IMAGE_NAME}\"}" > /etc/mindsync.json

@@ -80,7 +80,8 @@ else
 fi
 
 if [ -n "${MINIMAL}" ]; then
-    docker build -t "${IMAGE_NAME}:${IMAGE_VERSION}minimal" -f "Dockerfile-minimal" .
+    MINIMAL_FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}minimal"
+    docker build -t "${MINIMAL_FULL_IMAGE_NAME}" -f Dockerfile-minimal --build-arg "IMAGE_NAME=${MINIMAL_FULL_IMAGE_NAME}" .
     exit 0
 fi 
 
@@ -88,9 +89,13 @@ FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
 FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${CACHE_IMAGE_TAG}"
 
 if [ -z "${CACHE_FLAG}" ]; then
-    DOCKER_BUILDKIT=1 docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
+    DOCKER_BUILDKIT=1 docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" \
+        -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --build-arg "IMAGE_NAME=${FULL_IMAGE_NAME}" .
 else
-    DOCKER_BUILDKIT=1 docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 .
+    DOCKER_BUILDKIT=1 docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" \
+        -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg "IMAGE_NAME=${FULL_IMAGE_NAME}" .
 fi
 
-docker build --build-arg "BASE=${FULL_IMAGE_NAME}" -t "${VAST_IMAGE_NAME}" -f Dockerfile-vastai .
+docker build --build-arg "BASE=${FULL_IMAGE_NAME}" -t "${VAST_IMAGE_NAME}" \
+    -f Dockerfile-vastai --build-arg "IMAGE_NAME=${VAST_IMAGE_NAME}" .
