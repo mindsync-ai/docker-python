@@ -1,6 +1,5 @@
 #ipython_notebook img{
     display:block;
-    /* logo url here */
     background: url("logo.png") no-repeat;
     background-size: contain;
     width: 233px;
@@ -13,3 +12,11 @@
 span.save_widget {
     padding-top: 4px !important;
 }
+
+#ipython_notebook {min-width: 140px; max-width: 233px;}
+span.save_widget {
+    padding-top: 4px !important;
+    font-size: 16px !important;
+    flex: auto;
+}
+#timer {display: inline-block}

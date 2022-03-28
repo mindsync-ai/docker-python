@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 import os
+import json
 import argparse
 import re, shutil, tempfile
+
+CONFIG = '/tmp/mindsync.json'
 
 def sed_inplace(filename, pattern, repl):
     '''
@@ -27,6 +30,9 @@ def sed_inplace(filename, pattern, repl):
     shutil.copystat(filename, tmp_file.name)
     shutil.move(tmp_file.name, filename)
 
+def save_config(config):
+    with open(CONFIG, 'w', encoding='utf8') as f:
+        json.dump(config, f)
 
 def main():
     ap = argparse.ArgumentParser()
@@ -34,7 +40,10 @@ def main():
     ap.add_argument("-NotebookApp.token", "--NotebookApp.token", required=False)
     ap.add_argument("-NotebookApp.allow_origin", "--NotebookApp.allow_origin", required=False)
     ap.add_argument('--mindsync.base_url', required=True)
-    args = vars(ap.parse_args())
+    ap.add_argument('--mindsync.execution_id', required=False)
+
+    namespace, extra = ap.parse_known_args()
+    args = vars(namespace)
 
     uuid = args["NotebookApp.base_url"].split("/")[2]
     base_url = args['mindsync.base_url']
@@ -46,6 +55,9 @@ def main():
     sed_inplace(custom_js_fn, '{uuid}', f'{uuid}')
     sed_inplace(custom_js_fn, '{base_url}', f'{base_url}')
 
+    config = dict() 
+    config['uuid'] = uuid
+    save_config(config) 
 
 if __name__ == '__main__':
     main()
