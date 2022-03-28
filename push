@@ -98,7 +98,7 @@ fi
 
 SOURCE_IMAGE="${IMAGE_NAME}:${IMAGE_VERSION}${IMAGE_TAG}"
 
-if [ -n "${STAGE}" ]; then
+if [ "${STAGE}" -ne 0 ]; then
     if [ "$(echo ${IMAGE_TAG} | grep "noavx")" == "" ]; then
         docker tag "${SOURCE_IMAGE}" "${IMAGE_NAME}:latest-stage"
         docker push "${IMAGE_NAME}:latest-stage"
