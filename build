@@ -73,6 +73,8 @@ make_build_ver() {
 
 set -ex
 
+SCRIPT_DIR="$(dirname $(realpath $(basename ${0})))"
+
 if [ -n "${BUILD_NUMBER}" ]; then
     IMAGE_VERSION="$(make_build_ver "${BUILD_VERSION}" "${BUILD_NUMBER}")"
 else
@@ -81,7 +83,7 @@ fi
 
 if [ -n "${MINIMAL}" ]; then
     MINIMAL_FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_VERSION}minimal"
-    docker build -t "${MINIMAL_FULL_IMAGE_NAME}" -f Dockerfile-minimal --build-arg "IMAGE_NAME=${MINIMAL_FULL_IMAGE_NAME}" .
+    docker build -t "${MINIMAL_FULL_IMAGE_NAME}" -f "${SCRIPT_DIR}/Dockerfile-minimal" --build-arg "IMAGE_NAME=${MINIMAL_FULL_IMAGE_NAME}" .
     exit 0
 fi 
 
@@ -90,12 +92,12 @@ FULL_CACHE_IMAGE_NAME="${IMAGE_NAME}:${CACHE_IMAGE_TAG}"
 
 if [ -z "${CACHE_FLAG}" ]; then
     DOCKER_BUILDKIT=1 docker build --rm --pull --cache-from "${FULL_CACHE_IMAGE_NAME}" \
-        -t "${FULL_IMAGE_NAME}" -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 \
+        -t "${FULL_IMAGE_NAME}" -f "${SCRIPT_DIR}/${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 \
         --build-arg "IMAGE_NAME=${FULL_IMAGE_NAME}" .
 else
     DOCKER_BUILDKIT=1 docker build --rm --pull ${CACHE_FLAG} -t "${FULL_IMAGE_NAME}" \
-        -f "${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg "IMAGE_NAME=${FULL_IMAGE_NAME}" .
+        -f "${SCRIPT_DIR}/${DOCKERFILE}" --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg "IMAGE_NAME=${FULL_IMAGE_NAME}" .
 fi
 
 docker build --build-arg "BASE=${FULL_IMAGE_NAME}" -t "${VAST_IMAGE_NAME}" \
-    -f Dockerfile-vastai --build-arg "IMAGE_NAME=${VAST_IMAGE_NAME}" .
+    -f "${SCRIPT_DIR}/Dockerfile-vastai" --build-arg "IMAGE_NAME=${VAST_IMAGE_NAME}" .
