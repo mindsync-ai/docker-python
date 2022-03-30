@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eux
+
+# ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --minimal
+# ./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache
+./build --build-num "${TRAVIS_BUILD_NUMBER}" --use-cache --noavx
+# echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --minimal -
+# echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" -
+echo "${DOCKER_PASSWORD}" | ./push --build-num "${TRAVIS_BUILD_NUMBER}" --noavx -
