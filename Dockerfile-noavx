@@ -210,7 +210,7 @@ RUN pip install --upgrade pip && \
     rsa==4.7.2 \
     tensorboard==2.6.0 \
     Werkzeug==2.0.1 \
-    p2j \
+    p2j==1.3.2 \
     rise==5.7.1 && \
     rm -rf "${HOME}/${TENSORFLOW_WHL}"
 

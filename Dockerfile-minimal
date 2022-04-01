@@ -5,7 +5,7 @@ ARG NB_USER="jovyan"
 
 USER root
 
-RUN pip install p2j
+RUN pip install p2j==1.3.2
 
 # Copy local files as late as possible to avoid cache busting
 COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
