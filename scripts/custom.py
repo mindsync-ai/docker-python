@@ -57,6 +57,7 @@ def main():
 
     config = dict() 
     config['uuid'] = uuid
+    config['base_url'] = base_url
     save_config(config) 
 
 if __name__ == '__main__':
