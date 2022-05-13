@@ -14,7 +14,7 @@ python /usr/local/bin/custom.py "$@"
 ARGS=()
 for param in "$@"; do
     name=(${param//=/ }[0])
-    [ "${name}" != '--mindsync.base_url' ] && ARGS+=("$param")
+    ! [[ "${name}" =~ '--mindsync' ]] && ARGS+=("$param")
 done
 
 if [[ -n "${JUPYTERHUB_API_TOKEN}" ]]; then
